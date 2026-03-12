@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+  font-family: system-ui, sans-serif;
+}
+
+/* camera */
+
+video {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  object-fit: contain;
+
+  transform: scaleX(-1);
+  transform-origin: center;
+
+  transition: transform 0.15s ease;
+}
+
+/* control bar */
+
+.controls {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  gap: 12px;
+
+  padding: 10px 14px;
+
+  border-radius: 14px;
+
+  backdrop-filter: blur(16px);
+  background: rgba(20,20,20,0.5);
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* button styling */
+
+button {
+
+  width: 60px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  background: rgba(30,30,30,0.6);
+
+  color: white;
+  font-size: 16px;
+
+  cursor: pointer;
+
+  transition: transform .15s, background .2s, border-color .2s;
+}
+
+button:hover {
+  background: rgba(50,50,50,0.8);
+  border-color: rgba(255,255,255,0.2);
+}
+
+button:active {
+  transform: scale(0.92);
+}
+
+button i {
+  width: 20px;
+  height: 20px;
+}
