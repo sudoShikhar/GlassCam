@@ -9,6 +9,21 @@
 
 <body>
 
+<div class="titlebar">
+  <div class="titlebar__drag"></div>
+  <div class="titlebar__controls">
+    <button class="titlebar__button" id="winMinimize" title="Minimize" aria-label="Minimize">
+      <i data-lucide="minus"></i>
+    </button>
+    <button class="titlebar__button" id="winMaximize" title="Maximize" aria-label="Maximize">
+      <i data-lucide="square"></i>
+    </button>
+    <button class="titlebar__button titlebar__button--danger" id="winClose" title="Close" aria-label="Close">
+      <i data-lucide="x"></i>
+    </button>
+  </div>
+</div>
+
 <video id="video" autoplay muted playsinline></video>
 
 <div class="controls">

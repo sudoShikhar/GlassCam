@@ -5,6 +5,70 @@ body {
   font-family: system-ui, sans-serif;
 }
 
+/* custom titlebar (frameless window) */
+
+.titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 42px;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  background: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0));
+}
+
+.titlebar__drag {
+  position: absolute;
+  inset: 0;
+  -webkit-app-region: drag;
+}
+
+.titlebar__controls {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  padding: 8px 10px;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar__button {
+  width: 42px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(30,30,30,0.45);
+  color: white;
+  cursor: pointer;
+  transition: transform .15s, background .2s, border-color .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titlebar__button:hover {
+  background: rgba(50,50,50,0.7);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.titlebar__button:active {
+  transform: scale(0.92);
+}
+
+.titlebar__button--danger:hover {
+  background: rgba(180, 30, 30, 0.75);
+  border-color: rgba(255,255,255,0.25);
+}
+
+.titlebar__button i {
+  width: 18px;
+  height: 18px;
+}
+
 /* camera */
 
 video {

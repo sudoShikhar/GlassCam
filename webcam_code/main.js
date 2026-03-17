@@ -3,13 +3,51 @@ window.addEventListener('DOMContentLoaded', () => {
   const fitButton = document.getElementById('fitToggle');
   const zoomButton = document.getElementById('zoomButton');
   const zoomLabel = document.getElementById('zoomLabel');
+  const winMinimize = document.getElementById('winMinimize');
+  const winMaximize = document.getElementById('winMaximize');
+  const winClose = document.getElementById('winClose');
 
   if (!video || !fitButton || !zoomButton || !zoomLabel) {
     console.error('Required DOM elements not found.');
     return;
   }
 
+  if (!winMinimize || !winMaximize || !winClose) {
+    console.error('Window control elements not found.');
+    return;
+  }
+
   lucide.createIcons();
+
+  /* WINDOW CONTROLS (frameless window) */
+  function setMaximizeIcon(isMaximized) {
+    winMaximize.innerHTML = isMaximized
+      ? '<i data-lucide="copy"></i>'
+      : '<i data-lucide="square"></i>';
+    lucide.createIcons();
+  }
+
+  (async () => {
+    if (window.windowControls?.isMaximized) {
+      const isMax = await window.windowControls.isMaximized();
+      setMaximizeIcon(isMax);
+    }
+  })();
+
+  winMinimize.addEventListener('click', () => {
+    window.windowControls?.minimize?.();
+  });
+
+  winClose.addEventListener('click', () => {
+    window.windowControls?.close?.();
+  });
+
+  winMaximize.addEventListener('click', async () => {
+    const isMax = await window.windowControls?.toggleMaximize?.();
+    if (typeof isMax === 'boolean') {
+      setMaximizeIcon(isMax);
+    }
+  });
 
   async function startCamera() {
     try {
