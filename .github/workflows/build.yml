@@ -44,11 +44,15 @@ jobs:
       - name: Generate changelog
         id: changelog
         run: |
-          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
-          git log -1 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          git log --pretty=format:"- %s (%h)" -n 10 >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "CHANGELOG<<EOF"
+            echo "### 🆕 Latest"
+            git log -1 --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))"
+            echo ""
+            echo "### 📜 Recent"
+            git log --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))" -n 9 --skip=1
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       # 🚀 Create / update release
       - name: Create Release
