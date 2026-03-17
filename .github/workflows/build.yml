@@ -74,7 +74,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.TAG }}
-          name: Build #${{ github.run_number }}
+          name: "Build #${{ github.run_number }}"
           body: |
             🚀 Auto build
             🕒 ${{ steps.tag.outputs.DISPLAY_TIME }}
