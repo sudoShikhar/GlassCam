@@ -1,0 +1,65 @@
+name: Build AppImage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: webcam_code
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build AppImage
+        run: npm run build
+
+      # 🕒 Generate IST timestamp
+      - name: Generate IST timestamp
+        id: time
+        run: |
+          export TZ=Asia/Kolkata
+          echo "TIME=$(date +'%y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+      # 📦 Rename artifact with timestamp
+      - name: Rename AppImage
+        run: |
+          mv dist/*.AppImage dist/WebCam-${{ steps.time.outputs.TIME }}.AppImage
+
+      # 📝 Generate changelog from commits
+      - name: Generate changelog
+        id: changelog
+        run: |
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          git log -1 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          git log --pretty=format:"- %s (%h)" -n 10 >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # 🚀 Create / update release
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Build (${{ steps.time.outputs.TIME }})
+          body: |
+            🚀 Auto build (IST)
+
+            ${{ steps.changelog.outputs.CHANGELOG }}
+          files: webcam_code/dist/*.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
