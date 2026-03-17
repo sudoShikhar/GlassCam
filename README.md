@@ -1,6 +1,8 @@
 # electron_webcam
 A camera app in electron.
 
+## Generates Releases on push to main branch
+
 ## Note for Appimage users
 Might need to install `libfuse2`
 
