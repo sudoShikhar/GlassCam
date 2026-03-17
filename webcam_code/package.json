@@ -5,7 +5,35 @@
   "main": "index.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-builder && chmod +x dist/*"
+  },
+  "build": {
+    "appId": "com.sudoShikhar.webapp",
+    "asar": true,
+    "productName": "WebCam",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "assets/icon.png",
+      "category": "Utility",
+      "executableName": "WebCam",
+      "desktop": {
+        "entry": {
+          "Name": "WebCam",
+          "Comment": "Electron webcam app",
+          "Icon": "WebCam",
+          "Type": "Application"
+        }
+      }
+    }
   },
   "keywords": [],
   "author": "shikhar",
