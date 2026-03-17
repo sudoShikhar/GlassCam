@@ -54,17 +54,18 @@ jobs:
         run: |
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 
+          if [ -z "$LAST_TAG" ]; then
+            LOG=$(git log --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))")
+          else
+            LOG=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))")
+          fi
+
           {
             echo "CHANGELOG<<EOF"
             echo "### 🆕 Changes"
-
-            if [ -z "$LAST_TAG" ]; then
-              echo "_First release_"
-              git log --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))"
-            else
-              git log ${LAST_TAG}..HEAD --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))"
-            fi
-
+            echo ""
+            echo "$LOG"
+            echo ""
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
