@@ -1,95 +1,90 @@
-lucide.createIcons()
+window.addEventListener('DOMContentLoaded', () => {
+  const video = document.getElementById('video');
+  const fitButton = document.getElementById('fitToggle');
+  const zoomButton = document.getElementById('zoomButton');
+  const zoomLabel = document.getElementById('zoomLabel');
 
-async function startCamera() {
-
-  const video = document.getElementById("video")
-
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "user" },
-    audio: false
-  })
-
-  video.srcObject = stream
-  await video.play()
-}
-
-startCamera()
-
-
-/* FIT TOGGLE */
-
-const video = document.getElementById("video")
-const fitButton = document.getElementById("fitToggle")
-
-fitButton.onclick = () => {
-
-    const currentFit = getComputedStyle(video).objectFit
-
-  if (currentFit === "contain") {
-
-    video.style.objectFit = "cover"
-    fitButton.innerHTML = '<i data-lucide="minimize"></i>'
-
-  } else {
-
-    video.style.objectFit = "contain"
-    fitButton.innerHTML = '<i data-lucide="maximize"></i>'
-
+  if (!video || !fitButton || !zoomButton || !zoomLabel) {
+    console.error('Required DOM elements not found.');
+    return;
   }
 
-  lucide.createIcons()
-}
+  lucide.createIcons();
 
+  async function startCamera() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user' },
+        audio: false,
+      });
 
-/* ZOOM */
+      video.srcObject = stream;
+      await video.play();
+    } catch (err) {
+      console.error('Failed to start camera:', err);
+      alert('Could not access your webcam. Please check permissions and try again.');
+    }
+  }
 
-let zoom = 1
+  startCamera();
 
-const zoomButton = document.getElementById("zoomButton")
-const zoomLabel = document.getElementById("zoomLabel")
+  /* FIT TOGGLE */
+  fitButton.addEventListener('click', () => {
+    const currentFit = getComputedStyle(video).objectFit;
 
-function formatZoom(z) {
+    if (currentFit === 'contain') {
+      video.style.objectFit = 'cover';
+      fitButton.innerHTML = '<i data-lucide="minimize"></i>';
+    } else {
+      video.style.objectFit = 'contain';
+      fitButton.innerHTML = '<i data-lucide="maximize"></i>';
+    }
 
-  if (Number.isInteger(z))
-    return z + "x"
+    lucide.createIcons();
+  });
 
-  return z.toFixed(1) + "x"
+  /* ZOOM */
+  let zoom = 1;
 
-}
+  function formatZoom(z) {
+    if (Number.isInteger(z)) {
+      return `${z}x`;
+    }
 
-function applyZoom() {
+    return `${z.toFixed(1)}x`;
+  }
 
-  video.style.transform = `scaleX(-1) scale(${zoom})`
-  zoomLabel.textContent = formatZoom(zoom)
+  function applyZoom() {
+    video.style.transform = `scaleX(-1) scale(${zoom})`;
+    zoomLabel.textContent = formatZoom(zoom);
+  }
 
-}
+  // Ensure initial label/transform are in sync
+  applyZoom();
 
+  /* SCROLL TO ZOOM */
+  zoomButton.addEventListener(
+    'wheel',
+    (e) => {
+      e.preventDefault();
 
-/* SCROLL TO ZOOM */
+      if (e.deltaY < 0) {
+        zoom += 0.1;
+      } else {
+        zoom -= 0.1;
+      }
 
-zoomButton.addEventListener("wheel", (e) => {
+      zoom = Math.min(Math.max(zoom, 1), 4);
+      zoom = Math.round(zoom * 10) / 10;
 
-  e.preventDefault()
+      applyZoom();
+    },
+    { passive: false }
+  );
 
-  if (e.deltaY < 0)
-    zoom += 0.1
-  else
-    zoom -= 0.1
-
-  zoom = Math.min(Math.max(zoom, 1), 4)
-
-  zoom = Math.round(zoom * 10) / 10
-
-  applyZoom()
-
-})
-
-
-/* CLICK RESET */
-
-zoomButton.onclick = () => {
-
-  zoom = 1
-  applyZoom()
-
-}
+  /* CLICK RESET */
+  zoomButton.addEventListener('click', () => {
+    zoom = 1;
+    applyZoom();
+  });
+});
