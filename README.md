@@ -3,6 +3,10 @@ A camera app in electron.
 
 ## Generates Releases on push to main branch
 
+# Download for Linux
+[![Download Latest](https://img.shields.io/badge/Download-AppImage-blue?style=for-the-badge&logo=linux)](https://github.com/sudoShikhar/electron_webcam/releases/latest)
+
+
 ## Note for Appimage users
 Might need to install `libfuse2`
 
