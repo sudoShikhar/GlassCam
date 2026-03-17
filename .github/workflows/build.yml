@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write 
+  contents: write
 
 jobs:
   build-linux:
@@ -17,8 +17,10 @@ jobs:
         working-directory: webcam_code
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repo (full history)
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -31,42 +33,60 @@ jobs:
       - name: Build AppImage
         run: npm run build
 
-      # 🕒 Generate IST timestamp
-      - name: Generate IST timestamp
-        id: time
+      # 🕒 Generate IST timestamp + tag
+      - name: Generate tag (IST)
+        id: tag
         run: |
           export TZ=Asia/Kolkata
-          echo "TIME=$(date +'%y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+          TAG=$(date +'%Y-%m-%d_%H-%M-%S')
+          DISPLAY_TIME=$(date +'%d %b %Y, %H:%M IST')
+          echo "TAG=$TAG" >> $GITHUB_OUTPUT
+          echo "DISPLAY_TIME=$DISPLAY_TIME" >> $GITHUB_OUTPUT
 
-      # 📦 Rename artifact with timestamp
+      # 📦 Rename artifact
       - name: Rename AppImage
         run: |
-          mv dist/*.AppImage dist/WebCam-${{ steps.time.outputs.TIME }}.AppImage
+          mv dist/*.AppImage dist/WebCam-${{ steps.tag.outputs.TAG }}.AppImage
 
-      # 📝 Generate changelog from commits
+      # 📝 Generate changelog since last release tag
       - name: Generate changelog
         id: changelog
         run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
           {
             echo "CHANGELOG<<EOF"
-            echo "### 🆕 Latest"
-            git log -1 --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))"
-            echo ""
-            echo "### 📜 Recent"
-            git log --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))" -n 9 --skip=1
+            echo "### 🆕 Changes"
+
+            if [ -z "$LAST_TAG" ]; then
+              echo "_First release_"
+              git log --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))"
+            else
+              git log ${LAST_TAG}..HEAD --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H))"
+            fi
+
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      # 🚀 Create / update release
+      # 🚀 Create release
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: Latest Build (${{ steps.time.outputs.TIME }})
+          tag_name: ${{ steps.tag.outputs.TAG }}
+          name: Build #${{ github.run_number }}
           body: |
-            🚀 Auto build (IST)
+            🚀 Auto build
+            🕒 ${{ steps.tag.outputs.DISPLAY_TIME }}
 
             ${{ steps.changelog.outputs.CHANGELOG }}
           files: webcam_code/dist/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 🔗 Update "latest" tag pointer
+      - name: Update latest tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag -fa latest -m "Update latest tag"
+          git push origin latest --force
