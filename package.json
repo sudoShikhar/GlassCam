@@ -1,11 +1,11 @@
 {
-  "name": "frontcam",
+  "name": "electron_webcam",
   "version": "1.0.0",
-  "description": "A simple app to test your webcam.",
-  "main": "index.js",
+  "description": "A lightweight, modern Electron-based webcam application to test and view your camera feed.",
+  "main": "src/index.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "build": "electron-builder"
   },
   "build": {
@@ -13,10 +13,12 @@
     "asar": true,
     "productName": "WebCam",
     "files": [
-      "**/*"
+      "src/**/*",
+      "assets/**/*"
     ],
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "assets",
+      "output": "dist"
     },
     "linux": {
       "target": [
