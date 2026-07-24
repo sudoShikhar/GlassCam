@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test",
-    "build": "electron-builder"
+    "build": "electron-builder --publish never"
   },
   "build": {
     "appId": "com.sudoShikhar.webapp",
