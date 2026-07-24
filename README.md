@@ -37,6 +37,7 @@ chmod +x ./WebCam-*.AppImage
 ## Key Features
 
 - 📦 **Native `.deb` Installer**: Standard Ubuntu package with automatic desktop launcher, menu integration, and system app search.
+- 🔄 **Seamless Background Auto-Updates**: Powered by `electron-updater`, the app automatically checks GitHub Releases on launch and notifies/updates when a new release is published.
 - 📷 **Instant Camera Preview**: Fast, low-latency live camera feed built on Electron and web APIs.
 - 🔍 **Interactive Zoom Controls**: Mouse wheel scrolling for smooth 1x to 4x zoom adjustments, with single-click zoom reset.
 - 🖼️ **Flexible Aspect Ratio Modes**: Seamlessly toggle between `contain` and `cover` object-fit views.

@@ -1,5 +1,6 @@
 const path = require('path');
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const { autoUpdater } = require('electron-updater');
 
 // Fix SUID sandbox helper error on Ubuntu 24.04+ / AppArmor restricted Linux systems
 if (process.platform === 'linux') {
@@ -29,6 +30,13 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   createWindow();
+
+  // Automatically check for GitHub releases updates in production
+  if (app.isPackaged) {
+    autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+      console.warn('Auto-updater error:', err.message);
+    });
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
