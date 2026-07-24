@@ -32,7 +32,7 @@ jobs:
       - name: Run unit tests
         run: npm test
 
-      - name: Build AppImage
+      - name: Build packages (.deb & AppImage)
         run: npm run build
 
       # 🕒 Generate IST timestamp + tag
@@ -45,10 +45,15 @@ jobs:
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
           echo "DISPLAY_TIME=$DISPLAY_TIME" >> $GITHUB_OUTPUT
 
-      # 📦 Rename artifact
-      - name: Rename AppImage
+      # 📦 Rename artifacts
+      - name: Rename artifacts
         run: |
-          mv dist/*.AppImage dist/WebCam-${{ steps.tag.outputs.TAG }}.AppImage
+          if [ -f dist/*.AppImage ]; then
+            mv dist/*.AppImage dist/WebCam-${{ steps.tag.outputs.TAG }}.AppImage
+          fi
+          if [ -f dist/*.deb ]; then
+            mv dist/*.deb dist/WebCam-${{ steps.tag.outputs.TAG }}.deb
+          fi
 
       # 📝 Generate changelog since last release tag
       - name: Generate changelog
@@ -82,7 +87,9 @@ jobs:
             🕒 **Built at:** ${{ steps.tag.outputs.DISPLAY_TIME }}
 
             ${{ steps.changelog.outputs.CHANGELOG }}
-          files: dist/WebCam-*.AppImage
+          files: |
+            dist/*.deb
+            dist/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

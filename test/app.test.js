@@ -15,7 +15,7 @@ test('package.json configuration and assets', (t) => {
   assert.equal(pkg.main, 'src/index.js');
   assert.ok(pkg.build, 'build section must be defined');
   assert.equal(pkg.build.linux.executableName, 'WebCam');
-  assert.deepEqual(pkg.build.linux.target, ['AppImage']);
+  assert.deepEqual(pkg.build.linux.target, ['deb', 'AppImage']);
 
   const mainFile = path.join(BASE_DIR, pkg.main);
   assert.ok(fs.existsSync(mainFile), 'Main entry point src/index.js must exist');

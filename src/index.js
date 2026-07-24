@@ -1,7 +1,10 @@
 const path = require('path');
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 
-// require('electron-reload')(__dirname);
+// Fix SUID sandbox helper error on Ubuntu 24.04+ / AppArmor restricted Linux systems
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('no-sandbox');
+}
 
 const createWindow = () => {
   const win = new BrowserWindow({

@@ -22,7 +22,11 @@
     },
     "linux": {
       "target": [
+        "deb",
         "AppImage"
+      ],
+      "executableArgs": [
+        "--no-sandbox"
       ],
       "icon": "assets/icon.png",
       "category": "Utility",
@@ -30,7 +34,7 @@
     }
   },
   "keywords": [],
-  "author": "shikhar",
+  "author": "shikhar <sudoShikhar@users.noreply.github.com>",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
